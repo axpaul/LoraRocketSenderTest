@@ -24,17 +24,17 @@ Chaque paquet LoRa envoyé par l'émetteur contient un **en-tête LoRa de 3 octe
 * **Fréquence d'émission** : Toutes les 5 secondes (0.2 Hz).
 * **Taille totale de la trame** : 24 octets (3 octets en-tête + 21 octets payload).
 
-| Offset (octets) | Taille (octets) | Type | Nom du champ | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| **0** | 1 | `uint8_t` | `SSID_NUM` | Identifiant de la mission (configuré à `99` pour `FX99`). |
-| **1** | 1 | `uint8_t` | `APID` | Identifiant du paquet (configuré à `1` / `0x01`). |
-| **2** | 1 | `uint8_t` | `SSID_TYPE` | Type de mission (configuré à `0` / `0x00` pour `FX`). |
-| **3** | 4 | `uint32_t` | `timestamp` | Temps écoulé depuis le démarrage en millisecondes. |
-| **7** | 4 | `float` | `latitude` | Latitude GPS simulée en degrés (ex : `43.2324` pour Tarbes). |
-| **11** | 4 | `float` | `longitude` | Longitude GPS simulée en degrés (ex : `0.0782` pour Tarbes). |
-| **15** | 4 | `float` | `altitude` | Altitude GPS simulée en mètres (calquée sur l'altitude physique). |
-| **19** | 1 | `uint8_t` | `satellites` | Nombre de satellites GPS accrochés (simulé à `10`). |
-| **20** | 4 | `float` | `battery_voltage` | Tension de la batterie d'alimentation de la fusée en Volts. |
+| Offset (octets) | Taille (octets) | Type | Nom du champ | Unité / Format | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **0** | 1 | `uint8_t` | `SSID_NUM` | - | Identifiant de la mission (configuré à `99` pour `FX99`). |
+| **1** | 1 | `uint8_t` | `APID` | - | Identifiant du paquet (configuré à `1` / `0x01`). |
+| **2** | 1 | `uint8_t` | `SSID_TYPE` | - | Type de mission (configuré à `0` / `0x00` pour `FX`). |
+| **3** | 4 | `uint32_t` | `timestamp` | Millisecondes (ms) | Temps écoulé depuis le démarrage de la carte. |
+| **7** | 4 | `float` | `latitude` | Degrés Décimaux (DD) | Latitude GPS simulée (ex : `43.232400` pour Tarbes). |
+| **11** | 4 | `float` | `longitude` | Degrés Décimaux (DD) | Longitude GPS simulée (ex : `0.078200` pour Tarbes). |
+| **15** | 4 | `float` | `altitude` | Mètres (m) | Altitude GPS simulée au-dessus du niveau moyen de la mer. |
+| **19** | 1 | `uint8_t` | `satellites` | - | Nombre de satellites GPS détectés (simulé à `10`). |
+| **20** | 4 | `float` | `battery_voltage` | Volts (V) | Tension électrique d'alimentation de la carte. |
 
 ---
 
@@ -42,22 +42,22 @@ Chaque paquet LoRa envoyé par l'émetteur contient un **en-tête LoRa de 3 octe
 * **Fréquence d'émission** : Toutes les 1 seconde (1 Hz).
 * **Taille totale de la trame** : 44 octets (3 octets en-tête + 41 octets payload).
 
-| Offset (octets) | Taille (octets) | Type | Nom du champ | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| **0** | 1 | `uint8_t` | `SSID_NUM` | Identifiant de la mission (configuré à `99` pour `FX99`). |
-| **1** | 1 | `uint8_t` | `APID` | Identifiant du paquet (configuré à `2` / `0x02`). |
-| **2** | 1 | `uint8_t` | `SSID_TYPE` | Type de mission (configuré à `0` / `0x00` pour `FX`). |
-| **3** | 4 | `uint32_t` | `timestamp` | Temps écoulé depuis le démarrage en millisecondes. |
-| **7** | 4 | `float` | `baro_altitude` | Altitude barométrique simulée en mètres. |
-| **11** | 4 | `float` | `pressure` | Pression atmosphérique simulée en Pascals (formule barométrique). |
-| **15** | 4 | `float` | `temperature` | Température ambiante simulée en °C (décroissante avec l'altitude). |
-| **19** | 4 | `float` | `accel_x` | Accélération sur l'axe X (transverse) en G. |
-| **23** | 4 | `float` | `accel_y` | Accélération sur l'axe Y (transverse) en G. |
-| **27** | 4 | `float` | `accel_z` | Accélération sur l'axe Z (vertical/poussée) en G (inclut la gravité). |
-| **31** | 4 | `float` | `gyro_x` | Vitesse angulaire sur l'axe X en °/s. |
-| **35** | 4 | `float` | `gyro_y` | Vitesse angulaire sur l'axe Y en °/s. |
-| **39** | 4 | `float` | `gyro_z` | Vitesse angulaire sur l'axe Z (taux de roulis) en °/s. |
-| **43** | 1 | `uint8_t` | `flight_state` | Phase actuelle du vol :<br>`0` = IDLE (Attente au sol)<br>`1` = PROPULSION (Moteur allumé)<br>`2` = APOGEE/FREE (Vol balistique, apesanteur)<br>`3` = DESCENT (Sous parachute à vitesse terminale)<br>`4` = LANDED (Fusée posée) |
+| Offset (octets) | Taille (octets) | Type | Nom du champ | Unité / Format | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **0** | 1 | `uint8_t` | `SSID_NUM` | - | Identifiant de la mission (configuré à `99` pour `FX99`). |
+| **1** | 1 | `uint8_t` | `APID` | - | Identifiant du paquet (configuré à `2` / `0x02`). |
+| **2** | 1 | `uint8_t` | `SSID_TYPE` | - | Type de mission (configuré à `0` / `0x00` pour `FX`). |
+| **3** | 4 | `uint32_t` | `timestamp` | Millisecondes (ms) | Temps écoulé depuis le démarrage de la carte. |
+| **7** | 4 | `float` | `baro_altitude` | Mètres (m) | Altitude barométrique calculée. |
+| **11** | 4 | `float` | `pressure` | Pascals (Pa) | Pression atmosphérique absolue. |
+| **15** | 4 | `float` | `temperature` | Degrés Celsius (°C) | Température mesurée. |
+| **19** | 4 | `float` | `accel_x` | G-Force (G) | Accélération linéaire sur l'axe transverse X (1 G ≈ 9.81 m/s²). |
+| **23** | 4 | `float` | `accel_y` | G-Force (G) | Accélération linéaire sur l'axe transverse Y. |
+| **27** | 4 | `float` | `accel_z` | G-Force (G) | Accélération linéaire sur l'axe vertical Z (inclut la gravité). |
+| **31** | 4 | `float` | `gyro_x` | Degrés par seconde (°/s) | Vitesse de rotation angulaire sur l'axe X (tangage). |
+| **35** | 4 | `float` | `gyro_y` | Degrés par seconde (°/s) | Vitesse de rotation angulaire sur l'axe Y (lacet). |
+| **39** | 4 | `float` | `gyro_z` | Degrés par seconde (°/s) | Vitesse de rotation angulaire sur l'axe Z (roulis). |
+| **43** | 1 | `uint8_t` | `flight_state` | Code d'état | Phase actuelle du vol (`0`: IDLE, `1`: PROPULSION, `2`: APOGEE, `3`: DESCENT, `4`: LANDED). |
 
 ---
 
