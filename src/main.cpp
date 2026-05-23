@@ -16,6 +16,12 @@
 #include "boards.h"
 #include "telemetry_formats.h"
 
+// =========================================================================
+// OPTION DE DÉBOGAGE : Données statiques vs Simulation de vol
+// =========================================================================
+#define STATIC_TEST_MODE  // <-- Décommenter pour envoyer des valeurs fixes de test (débogage chaîne)
+                          // <-- Commenter pour activer le simulateur de vol physique dynamique
+
 // Instantiate the SX1276 radio module
 SX1276 radio = new Module(RADIO_CS_PIN, RADIO_DIO0_PIN, RADIO_RST_PIN, RADIO_BUSY_PIN);
 
@@ -63,6 +69,26 @@ void setFlag(void)
 
 // Update the flight dynamics and sensor simulation
 void updateFlightSimulation() {
+#ifdef STATIC_TEST_MODE
+    // Values are locked to static constants for debugging the telemetry chain
+    simAltitude = 500.0;
+    simVelocity = 0.0;
+    simPressure = 95000.0;
+    simTemperature = 25.0;
+    simAccelX = 0.1;
+    simAccelY = -0.2;
+    simAccelZ = 1.0;
+    simGyroX = 10.0;
+    simGyroY = -20.0;
+    simGyroZ = 30.0;
+    simLat = 43.5;
+    simLon = 1.5;
+    simBattery = 4.20;
+    flightState = 0; // IDLE
+    lastSimUpdate = millis();
+    return;
+#endif
+
     unsigned long now = millis();
     if (lastSimUpdate == 0) {
         lastSimUpdate = now;
@@ -226,6 +252,9 @@ void drawOledScreen() {
     char buf[32];
     
     const char* state_str = "IDLE";
+#ifdef STATIC_TEST_MODE
+    state_str = "STATIC TEST";
+#else
     switch (flightState) {
         case 0: state_str = "IDLE"; break;
         case 1: state_str = "PROPULSION"; break;
@@ -233,6 +262,7 @@ void drawOledScreen() {
         case 3: state_str = "DESCENT"; break;
         case 4: state_str = "LANDED"; break;
     }
+#endif
     snprintf(buf, sizeof(buf), "ETAT : %s", state_str);
     u8g2->drawStr(0, 26, buf);
     
