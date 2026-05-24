@@ -19,7 +19,7 @@
 // =========================================================================
 // OPTION DE DÉBOGAGE : Données statiques vs Simulation de vol
 // =========================================================================
-#define STATIC_TEST_MODE  // <-- Décommenter pour envoyer des valeurs fixes de test (débogage chaîne)
+//#define STATIC_TEST_MODE  // <-- Décommenter pour envoyer des valeurs fixes de test (débogage chaîne)
                           // <-- Commenter pour activer le simulateur de vol physique dynamique
 
 // Instantiate the SX1276 radio module
