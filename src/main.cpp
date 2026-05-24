@@ -279,12 +279,22 @@ void drawOledScreen() {
 }
 #endif
 
+// Helper function to print packet in HEX format
+void printHex(const uint8_t* data, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        if (data[i] < 0x10) Serial.print('0');
+        Serial.print(data[i], HEX);
+        Serial.print(' ');
+    }
+    Serial.println();
+}
+
 void setup()
 {
     initBoard();
     delay(1500);
 
-    Serial.print(F("[SX1276] Initializing LoRa ... "));
+    Serial.printf("[SX1276] Initializing LoRa at %.3f MHz ... ", NECTAR_LORA_FREQUENCY);
     int state = radio.begin(NECTAR_LORA_FREQUENCY);
 
 #ifdef HAS_DISPLAY
@@ -367,6 +377,19 @@ void loop()
             if (state == RADIOLIB_ERR_NONE) {
                 radioTransmitting = true;
                 packetsSent++;
+                
+                // Print structured info to console
+                Serial.printf("\n--- [TX] APID SENSORS | Freq: %.3f MHz ---\n", NECTAR_LORA_FREQUENCY);
+                Serial.print("Raw Bytes : ");
+                printHex(packet, sizeof(packet));
+                Serial.printf("  SSID: %d | APID: %d | Type: %d\n", header->ssid_num, header->apid, header->ssid_type);
+                Serial.printf("  Time: %u ms | Alt Baro: %.2f m | Press: %.1f Pa | Temp: %.1f C\n",
+                              sensors->timestamp, sensors->baro_altitude, sensors->pressure, sensors->temperature);
+                Serial.printf("  Accel: (%.2f, %.2f, %.2f) G | Gyro: (%.1f, %.1f, %.1f) deg/s\n",
+                              sensors->accel_x, sensors->accel_y, sensors->accel_z,
+                              sensors->gyro_x, sensors->gyro_y, sensors->gyro_z);
+                Serial.printf("  State: %d\n", sensors->flight_state);
+                Serial.println("----------------------------------------------");
             } else {
                 Serial.printf("[LoRa] APID_SENSORS transmit failed, code %d\n", state);
             }
@@ -397,6 +420,16 @@ void loop()
             if (state == RADIOLIB_ERR_NONE) {
                 radioTransmitting = true;
                 packetsSent++;
+                
+                // Print structured info to console
+                Serial.printf("\n--- [TX] APID GPS | Freq: %.3f MHz ---\n", NECTAR_LORA_FREQUENCY);
+                Serial.print("Raw Bytes : ");
+                printHex(packet, sizeof(packet));
+                Serial.printf("  SSID: %d | APID: %d | Type: %d\n", header->ssid_num, header->apid, header->ssid_type);
+                Serial.printf("  Time: %u ms | Lat: %.6f | Lon: %.6f | Alt GPS: %.1f m\n",
+                              gps->timestamp, gps->latitude, gps->longitude, gps->altitude);
+                Serial.printf("  Sats: %d | Battery: %.2f V\n", gps->satellites, gps->battery_voltage);
+                Serial.println("----------------------------------------------");
             } else {
                 Serial.printf("[LoRa] APID_GPS transmit failed, code %d\n", state);
             }

@@ -4,7 +4,11 @@
 #include <Arduino.h>
 
 // Configuration LoRa matching the Nectar Ground Station
-#define NECTAR_LORA_FREQUENCY       869.525 // MHz
+#if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
+#define NECTAR_LORA_FREQUENCY       433.0   // MHz (pour la bande 433 MHz)
+#else
+#define NECTAR_LORA_FREQUENCY       869.525 // MHz (pour la bande 868 MHz, fréquence Nectar standard)
+#endif
 #define NECTAR_LORA_SPREAD_FACTOR   8
 #define NECTAR_LORA_BANDWIDTH       250.0   // kHz
 #define NECTAR_LORA_POWER           17      // dBm
