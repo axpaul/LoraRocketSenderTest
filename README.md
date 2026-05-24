@@ -85,19 +85,36 @@ L'écran OLED SSD1306 affiche les informations de fonctionnement avec une esthé
 
 ## 🛠️ Compilation et Téléversement
 
-Le projet est configuré sous **PlatformIO**.
+Le projet est configuré sous **PlatformIO** avec deux environnements distincts définissant la bande de fréquence de transmission.
+
+### 1. Bande 868 MHz (Fréquence réelle : 869.525 MHz)
 
 Pour compiler :
 ```bash
-pio run
+pio run -e ttgo-lora32-v21-868
 ```
 
-Pour compiler et flasher la carte en USB :
+Pour compiler et flasher par USB :
 ```bash
-pio run -t upload
+pio run -e ttgo-lora32-v21-868 -t upload
 ```
 
-Pour visualiser la console série de diagnostic (115200 bauds) :
+### 2. Bande 433 MHz (Fréquence réelle : 433.000 MHz)
+
+Pour compiler :
+```bash
+pio run -e ttgo-lora32-v21-433
+```
+
+Pour compiler et flasher par USB :
+```bash
+pio run -e ttgo-lora32-v21-433 -t upload
+```
+
+### Moniteur Série (USB)
+
+Pour visualiser la console de diagnostic en temps réel (115200 bauds) :
 ```bash
 pio device monitor
 ```
+
