@@ -10,7 +10,7 @@
 #define LORA_868_MAX_FREQ           870.00  // MHz
 
 #if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
-#define NECTAR_LORA_FREQUENCY       434.525 // MHz (Bande 433 MHz, dans la plage autorisée 433.05 - 434.79 MHz)
+#define NECTAR_LORA_FREQUENCY       433.05  // MHz (Bande 433 MHz, limite basse de la plage autorisée 433.05 - 434.79 MHz)
 #else
 #define NECTAR_LORA_FREQUENCY       869.525 // MHz (Bande 868 MHz, fréquence Nectar standard dans la plage 863 - 870 MHz)
 #endif
