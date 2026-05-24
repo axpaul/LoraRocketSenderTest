@@ -10,7 +10,7 @@ Le transmetteur utilise les paramètres radio suivants pour s'aligner sur la sta
 
 * **Fréquences de transmission par défaut** :
   * **Bande 868 MHz** : `869.525 MHz` (Plage ISM/ICM autorisée : **863.00 – 870.00 MHz**)
-  * **Bande 433 MHz** : `433.050 MHz` (Plage ISM/ICM autorisée : **433.05 – 434.79 MHz**)
+  * **Bande 433 MHz** : `433.500 MHz` (Plage ISM/ICM autorisée : **433.05 – 434.79 MHz**)
 * **Sécurité de Fréquence (Bandes ICM)** : Le code intègre des vérifications strictes à la compilation (`static_assert`). Si la fréquence configurée sort des plages autorisées ci-dessus, la compilation échouera automatiquement avec un message d'erreur explicite.
 * **Spreading Factor (SF)** : `8`
 * **Bande Passante (BW)** : `250 kHz`
@@ -103,7 +103,7 @@ Pour compiler et flasher par USB :
 pio run -e ttgo-lora32-v21-868 -t upload
 ```
 
-### 2. Bande 433 MHz (Fréquence réelle : 433.050 MHz)
+### 2. Bande 433 MHz (Fréquence réelle : 433.500 MHz)
 
 Pour compiler :
 ```bash

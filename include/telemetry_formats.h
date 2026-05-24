@@ -3,30 +3,35 @@
 
 #include <Arduino.h>
 
-// Limites réglementaires des bandes ISM (dites bandes ICM : Industrielles, Scientifiques et Médicales)
-#define LORA_433_MIN_FREQ           433.05  // MHz
-#define LORA_433_MAX_FREQ           434.79  // MHz
-#define LORA_868_MIN_FREQ           863.00  // MHz
-#define LORA_868_MAX_FREQ           870.00  // MHz
-
-#if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
-#define NECTAR_LORA_FREQUENCY       433.05  // MHz (Bande 433 MHz, limite basse de la plage autorisée 433.05 - 434.79 MHz)
-#else
-#define NECTAR_LORA_FREQUENCY       869.525 // MHz (Bande 868 MHz, fréquence Nectar standard dans la plage 863 - 870 MHz)
+// Choix par défaut de la bande et de la configuration RF (Bandes ICM/ISM)
+#ifndef LORA_BAND_NATIVE
+#define LORA_BAND_NATIVE            868     // Fallback par défaut si non défini
 #endif
 
-// Validation de conformité des fréquences aux limites des bandes ICM à la compilation
-#if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
-static_assert(NECTAR_LORA_FREQUENCY >= LORA_433_MIN_FREQ && NECTAR_LORA_FREQUENCY <= LORA_433_MAX_FREQ,
-              "ERREUR: La fréquence LoRa configurée est en dehors de la plage ICM autorisée pour la bande 433 MHz (433.05 - 434.79 MHz) !");
-#else
-static_assert(NECTAR_LORA_FREQUENCY >= LORA_868_MIN_FREQ && NECTAR_LORA_FREQUENCY <= LORA_868_MAX_FREQ,
-              "ERREUR: La fréquence LoRa configurée est en dehors de la plage ICM autorisée pour la bande 868 MHz (863.00 - 870.00 MHz) !");
+#if LORA_BAND_NATIVE == 868
+#define FREQ_MIN                    863.0f
+#define FREQ_MAX                    870.0f
+#define DEFAULT_FREQUENCY           869.525f
+#define DEFAULT_SF                  8       // Spreading Factor par défaut pour le 868
+#define DEFAULT_BW                  250.0f  // Bande passante par défaut (kHz) pour le 868
+#elif LORA_BAND_NATIVE == 433
+#define FREQ_MIN                    433.05f
+#define FREQ_MAX                    434.79f
+#define DEFAULT_FREQUENCY           433.500f
+#define DEFAULT_SF                  8       // Spreading Factor par défaut pour le 433
+#define DEFAULT_BW                  250.0f  // Bande passante par défaut (kHz) pour le 433
 #endif
-#define NECTAR_LORA_SPREAD_FACTOR   8
-#define NECTAR_LORA_BANDWIDTH       250.0   // kHz
+
+// Définitions utilisées pour la configuration active du transmetteur Nectar
+#define NECTAR_LORA_FREQUENCY       DEFAULT_FREQUENCY
+#define NECTAR_LORA_SPREAD_FACTOR   DEFAULT_SF
+#define NECTAR_LORA_BANDWIDTH       DEFAULT_BW
 #define NECTAR_LORA_POWER           17      // dBm
 #define NECTAR_LORA_CURRENT_LIMIT   120     // mA
+
+// Validation de conformité de la fréquence active par rapport aux limites ICM à la compilation
+static_assert(NECTAR_LORA_FREQUENCY >= FREQ_MIN && NECTAR_LORA_FREQUENCY <= FREQ_MAX,
+              "ERREUR: La fréquence LoRa configurée est en dehors de la plage ICM réglementaire !");
 
 // Mission Configuration
 #define TELEMETRY_SSID_NUM          99      // Mission number (e.g., FX99)
