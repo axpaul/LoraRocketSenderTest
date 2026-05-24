@@ -23,7 +23,7 @@
                           // <-- Commenter pour activer le simulateur de vol physique dynamique
 
 // Instantiate the SX1276 radio module
-SX1276 radio = new Module(RADIO_CS_PIN, RADIO_DIO0_PIN, RADIO_RST_PIN, RADIO_BUSY_PIN);
+SX1276 radio = new Module(RADIO_CS_PIN, RADIO_DIO0_PIN, RADIO_RST_PIN, RADIO_DIO1_PIN);
 
 // Global objects declared in boards.h
 #ifdef HAS_DISPLAY
@@ -59,7 +59,7 @@ unsigned long lastSensorTx = 0;   // timer for APID_SENSORS (5 Hz)
 unsigned long lastGpsTx = 0;      // timer for APID_GPS (0.5 Hz)
 
 // Interrupt service routine called when packet transmission is finished
-void setFlag(void)
+void IRAM_ATTR setFlag(void)
 {
     if (!enableInterrupt) {
         return;
@@ -317,7 +317,23 @@ void setup()
     } else {
         Serial.print(F("failed, code "));
         Serial.println(state);
-        while (true);
+        #ifdef HAS_DISPLAY
+        if (u8g2) {
+            u8g2->clearBuffer();
+            u8g2->setFont(u8g2_font_6x12_tr);
+            u8g2->drawStr(0, 12, "LoRa Init: FAIL!");
+            char code_str[16];
+            snprintf(code_str, sizeof(code_str), "Code: %d", state);
+            u8g2->drawStr(0, 26, code_str);
+            u8g2->sendBuffer();
+        }
+        #endif
+        while (true) {
+            #ifdef BOARD_LED
+            digitalWrite(BOARD_LED, !digitalRead(BOARD_LED));
+            #endif
+            delay(1000); // Yield to the watchdog and CPU to prevent hardware bootloops
+        }
     }
 
     // Attach DIO0 interrupt handler
