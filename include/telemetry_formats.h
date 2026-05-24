@@ -3,11 +3,25 @@
 
 #include <Arduino.h>
 
-// Configuration LoRa matching the Nectar Ground Station
+// Limites réglementaires des bandes ISM (dites bandes ICM : Industrielles, Scientifiques et Médicales)
+#define LORA_433_MIN_FREQ           433.05  // MHz
+#define LORA_433_MAX_FREQ           434.79  // MHz
+#define LORA_868_MIN_FREQ           863.00  // MHz
+#define LORA_868_MAX_FREQ           870.00  // MHz
+
 #if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
-#define NECTAR_LORA_FREQUENCY       433.0   // MHz (pour la bande 433 MHz)
+#define NECTAR_LORA_FREQUENCY       434.525 // MHz (Bande 433 MHz, dans la plage autorisée 433.05 - 434.79 MHz)
 #else
-#define NECTAR_LORA_FREQUENCY       869.525 // MHz (pour la bande 868 MHz, fréquence Nectar standard)
+#define NECTAR_LORA_FREQUENCY       869.525 // MHz (Bande 868 MHz, fréquence Nectar standard dans la plage 863 - 870 MHz)
+#endif
+
+// Validation de conformité des fréquences aux limites des bandes ICM à la compilation
+#if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
+static_assert(NECTAR_LORA_FREQUENCY >= LORA_433_MIN_FREQ && NECTAR_LORA_FREQUENCY <= LORA_433_MAX_FREQ,
+              "ERREUR: La fréquence LoRa configurée est en dehors de la plage ICM autorisée pour la bande 433 MHz (433.05 - 434.79 MHz) !");
+#else
+static_assert(NECTAR_LORA_FREQUENCY >= LORA_868_MIN_FREQ && NECTAR_LORA_FREQUENCY <= LORA_868_MAX_FREQ,
+              "ERREUR: La fréquence LoRa configurée est en dehors de la plage ICM autorisée pour la bande 868 MHz (863.00 - 870.00 MHz) !");
 #endif
 #define NECTAR_LORA_SPREAD_FACTOR   8
 #define NECTAR_LORA_BANDWIDTH       250.0   // kHz

@@ -6,8 +6,12 @@ Ce projet configure une carte **LilyGO TTGO T3 V1.6.1** (ESP32 + SX1276 + OLED +
 
 ## 📡 Paramètres de configuration RF LoRa
 
-Pour que la liaison s'établisse avec le récepteur Nectar, l'émetteur utilise les paramètres radio suivants :
-* **Fréquence** : `869.525 MHz`
+Le transmetteur utilise les paramètres radio suivants pour s'aligner sur la station de réception et respecter les réglementations sur les bandes **ISM (Industrial, Scientific and Medical)** :
+
+* **Fréquences de transmission par défaut** :
+  * **Bande 868 MHz** : `869.525 MHz` (Plage ISM/ICM autorisée : **863.00 – 870.00 MHz**)
+  * **Bande 433 MHz** : `434.525 MHz` (Plage ISM/ICM autorisée : **433.05 – 434.79 MHz**)
+* **Sécurité de Fréquence (Bandes ICM)** : Le code intègre des vérifications strictes à la compilation (`static_assert`). Si la fréquence configurée sort des plages autorisées ci-dessus, la compilation échouera automatiquement avec un message d'erreur explicite.
 * **Spreading Factor (SF)** : `8`
 * **Bande Passante (BW)** : `250 kHz`
 * **Puissance d'émission** : `17 dBm`
@@ -99,7 +103,7 @@ Pour compiler et flasher par USB :
 pio run -e ttgo-lora32-v21-868 -t upload
 ```
 
-### 2. Bande 433 MHz (Fréquence réelle : 433.000 MHz)
+### 2. Bande 433 MHz (Fréquence réelle : 434.525 MHz)
 
 Pour compiler :
 ```bash
