@@ -210,14 +210,18 @@ void updateFlightSimulation() {
 }
 
 #ifdef HAS_DISPLAY
-// Render simulator status on the TTGO OLED with premium graphics
-void drawOledScreen() {
+// Render simulator status on the TTGO OLED with premium graphics (Page 0: Telemetry, Page 1: RF Config)
+void drawOledScreen(uint8_t page) {
     if (!u8g2) return;
     u8g2->clearBuffer();
     
     // Header Bar
     u8g2->setFont(u8g2_font_6x12_tr);
-    u8g2->drawStr(0, 10, "NECTAR SENDER");
+    if (page == 0) {
+        u8g2->drawStr(0, 10, "NECTAR TELEM");
+    } else {
+        u8g2->drawStr(0, 10, "NECTAR RF CFG");
+    }
     u8g2->drawHLine(0, 13, 114);
     
     // Trajectory vertical progress bar (X: 118 to 124, Y: 15 to 61)
@@ -251,29 +255,47 @@ void drawOledScreen() {
     u8g2->setFont(u8g2_font_6x10_tf);
     char buf[32];
     
-    const char* state_str = "IDLE";
+    if (page == 0) {
+        const char* state_str = "IDLE";
 #ifdef STATIC_TEST_MODE
-    state_str = "STATIC TEST";
+        state_str = "STATIC TEST";
 #else
-    switch (flightState) {
-        case 0: state_str = "IDLE"; break;
-        case 1: state_str = "PROPULSION"; break;
-        case 2: state_str = "APOGEE/FREE"; break;
-        case 3: state_str = "DESCENT"; break;
-        case 4: state_str = "LANDED"; break;
-    }
+        switch (flightState) {
+            case 0: state_str = "IDLE"; break;
+            case 1: state_str = "PROPULSION"; break;
+            case 2: state_str = "APOGEE/FREE"; break;
+            case 3: state_str = "DESCENT"; break;
+            case 4: state_str = "LANDED"; break;
+        }
 #endif
-    snprintf(buf, sizeof(buf), "ETAT : %s", state_str);
-    u8g2->drawStr(0, 26, buf);
-    
-    snprintf(buf, sizeof(buf), "ALT  : %.1f m", simAltitude);
-    u8g2->drawStr(0, 38, buf);
-    
-    snprintf(buf, sizeof(buf), "VIT  : %.1f m/s", simVelocity);
-    u8g2->drawStr(0, 50, buf);
-    
-    snprintf(buf, sizeof(buf), "PKTS : %d", packetsSent);
-    u8g2->drawStr(0, 62, buf);
+        snprintf(buf, sizeof(buf), "ETAT : %s", state_str);
+        u8g2->drawStr(0, 26, buf);
+        
+        snprintf(buf, sizeof(buf), "ALT  : %.1f m", simAltitude);
+        u8g2->drawStr(0, 38, buf);
+        
+        snprintf(buf, sizeof(buf), "VIT  : %.1f m/s", simVelocity);
+        u8g2->drawStr(0, 50, buf);
+        
+        snprintf(buf, sizeof(buf), "PKTS : %d", packetsSent);
+        u8g2->drawStr(0, 62, buf);
+    } else {
+        snprintf(buf, sizeof(buf), "FREQ : %.3f MHz", NECTAR_LORA_FREQUENCY);
+        u8g2->drawStr(0, 26, buf);
+        
+#if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
+        snprintf(buf, sizeof(buf), "BAND : 433 (ICM)");
+#else
+        snprintf(buf, sizeof(buf), "BAND : 868 (ICM)");
+#endif
+        u8g2->drawStr(0, 38, buf);
+        
+        snprintf(buf, sizeof(buf), "SF   : %d", NECTAR_LORA_SPREAD_FACTOR);
+        u8g2->drawStr(0, 50, buf);
+        
+        snprintf(buf, sizeof(buf), "BW   : %.1f kHz", NECTAR_LORA_BANDWIDTH);
+        u8g2->drawStr(0, 62, buf);
+    }
     
     u8g2->sendBuffer();
 }
@@ -452,12 +474,21 @@ void loop()
         }
     }
 
-    // 3. Update the display (every 200 ms to avoid flickering)
+    // 3. Update the display (every 200 ms to avoid flickering) and alternate pages
 #ifdef HAS_DISPLAY
     static unsigned long lastDisplayUpdate = 0;
-    if (millis() - lastDisplayUpdate >= 200) {
-        lastDisplayUpdate = millis();
-        drawOledScreen();
+    static unsigned long lastPageSwitch = 0;
+    static uint8_t currentPage = 0; // 0 = Telemetry, 1 = RF Config
+    
+    unsigned long oledNow = millis();
+    if (oledNow - lastPageSwitch >= 3000) { // Cycle pages every 3 seconds
+        lastPageSwitch = oledNow;
+        currentPage = (currentPage + 1) % 2;
+    }
+    
+    if (oledNow - lastDisplayUpdate >= 200) {
+        lastDisplayUpdate = oledNow;
+        drawOledScreen(currentPage);
     }
 #endif
 }
