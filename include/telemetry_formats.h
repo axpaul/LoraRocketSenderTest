@@ -14,19 +14,21 @@
 #define DEFAULT_FREQUENCY           869.525f
 #define DEFAULT_SF                  8       // Spreading Factor par défaut pour le 868
 #define DEFAULT_BW                  250.0f  // Bande passante par défaut (kHz) pour le 868
+#define DEFAULT_POWER               17      // Puissance d'émission par défaut (dBm) pour le 868 (max 20 dBm)
 #elif LORA_BAND_NATIVE == 433
 #define FREQ_MIN                    433.05f
 #define FREQ_MAX                    434.79f
 #define DEFAULT_FREQUENCY           433.500f
 #define DEFAULT_SF                  8       // Spreading Factor par défaut pour le 433
 #define DEFAULT_BW                  250.0f  // Bande passante par défaut (kHz) pour le 433
+#define DEFAULT_POWER               10      // Puissance d'émission par défaut (dBm) pour le 433 (limite réglementaire classique)
 #endif
 
 // Définitions utilisées pour la configuration active du transmetteur Nectar
 #define NECTAR_LORA_FREQUENCY       DEFAULT_FREQUENCY
 #define NECTAR_LORA_SPREAD_FACTOR   DEFAULT_SF
 #define NECTAR_LORA_BANDWIDTH       DEFAULT_BW
-#define NECTAR_LORA_POWER           17      // dBm
+#define NECTAR_LORA_POWER           DEFAULT_POWER
 #define NECTAR_LORA_CURRENT_LIMIT   120     // mA
 
 // Validation de conformité de la fréquence active par rapport aux limites ICM à la compilation

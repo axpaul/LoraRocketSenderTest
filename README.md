@@ -14,7 +14,7 @@ Le transmetteur utilise les paramètres radio suivants pour s'aligner sur la sta
 * **Sécurité de Fréquence (Bandes ICM)** : Le code intègre des vérifications strictes à la compilation (`static_assert`). Si la fréquence configurée sort des plages autorisées ci-dessus, la compilation échouera automatiquement avec un message d'erreur explicite.
 * **Spreading Factor (SF)** : `8`
 * **Bande Passante (BW)** : `250 kHz`
-* **Puissance d'émission** : `17 dBm`
+* **Puissance d'émission par défaut** : `17 dBm` (Bande 868 MHz) ou `10 dBm` (Bande 433 MHz) — facilement configurable via `DEFAULT_POWER` dans [telemetry_formats.h](file:///c:/Users/paulm/OneDrive/Documents/PlatformIO/Projects/LoraRocketSenderTest/include/telemetry_formats.h)
 * **Limitation de courant** : `120 mA`
 * **CRC matériel LoRa** : Activé (`true`)
 

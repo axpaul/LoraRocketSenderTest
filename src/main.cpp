@@ -283,11 +283,7 @@ void drawOledScreen(uint8_t page) {
         snprintf(buf, sizeof(buf), "FREQ : %.3f MHz", NECTAR_LORA_FREQUENCY);
         u8g2->drawStr(0, 26, buf);
         
-#if defined(LORA_BAND_NATIVE) && LORA_BAND_NATIVE == 433
-        snprintf(buf, sizeof(buf), "BAND : 433 (ICM)");
-#else
-        snprintf(buf, sizeof(buf), "BAND : 868 (ICM)");
-#endif
+        snprintf(buf, sizeof(buf), "PWR  : %d dBm", NECTAR_LORA_POWER);
         u8g2->drawStr(0, 38, buf);
         
         snprintf(buf, sizeof(buf), "SF   : %d", NECTAR_LORA_SPREAD_FACTOR);
